@@ -1,9 +1,9 @@
 ﻿  Labs 3+4.cpp
-h:\desktop\y2s1\ai\labs 3+4.cpp(32): warning C4101: 'y': unreferenced local variable
-h:\desktop\y2s1\ai\labs 3+4.cpp(151): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-h:\desktop\y2s1\ai\labs 3+4.cpp(155): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-h:\desktop\y2s1\ai\labs 3+4.cpp(159): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-h:\desktop\y2s1\ai\labs 3+4.cpp(186): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-h:\desktop\y2s1\ai\labs 3+4.cpp(188): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-h:\desktop\y2s1\ai\labs 3+4.cpp(190): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\desktop\y2s1\ai\ailabs\ai labs\labs 3+4.cpp(33): warning C4101: 'y': unreferenced local variable
+h:\desktop\y2s1\ai\ailabs\ai labs\labs 3+4.cpp(196): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\desktop\y2s1\ai\ailabs\ai labs\labs 3+4.cpp(200): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\desktop\y2s1\ai\ailabs\ai labs\labs 3+4.cpp(204): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\desktop\y2s1\ai\ailabs\ai labs\labs 3+4.cpp(231): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\desktop\y2s1\ai\ailabs\ai labs\labs 3+4.cpp(233): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\desktop\y2s1\ai\ailabs\ai labs\labs 3+4.cpp(235): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   AI Labs.vcxproj -> H:\Desktop\Y2S1\AI\AILabs\Debug\AI Labs.exe
