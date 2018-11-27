@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
 //Defining e
 #define e 2.71828
 #define delta 0.0000001
@@ -13,6 +14,7 @@
 // Step function
 float stepFunc(float &_w1, float &_w2, float _theta, int _iterations, float _alpha);
 float multiNeuron(int _iterations, float _alpha);
+void geneticAlgorithm(std::vector<std::vector<int>> _currentLevel);
 /*
 // Sign function
 float signFunc(int _x, float _theta);
@@ -37,7 +39,12 @@ int main()
 
 	// Genetic algorithm
 	// Loading the file:
-	//std::ifstream levelFile("level1.txt");
+	//std::ifstream levelFile("level1.txt");	
+	
+
+	// Initial variable declare
+	std::vector<std::vector<int>> levelMatrix;
+	levelMatrix.resize(2 ,std::vector<int>(0));
 	std::ifstream levelFiles[2];
 	for (int j = 0; j < 2; j++)
 	{
@@ -50,35 +57,58 @@ int main()
 		}
 	}
 
-
 	char ph;
-	char tempLevel[51] = {0};
-	int level[2][26] = {0};
+	std::vector<char> tempLevel;
 	char legalChars[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-	int k = 0;
-	int i;
+	std::vector<std::vector<int>> currentLevel;
+	int m = 0;
+	int val;
 
 	for (int l = 0; l < 2; l++)
 	{
-		i = 0;
+		tempLevel.clear();
 		while (levelFiles[l].get(ph))
 		{
-			tempLevel[i] = ph;
-			i++;
+			tempLevel.push_back(ph);
 		}
-		for (i = 0; i < 51; i++)
+		for (int i = 0; i < (tempLevel.size()); i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				if (tempLevel[i] == legalChars[j])
+				m = 0;
+				for (int k = 0; k < 10; k++)
 				{
-					level[l][k] = tempLevel[i] - 48;
-					k++;
+					if (tempLevel[i] == legalChars[j] && tempLevel[i + 1] == legalChars[k])
+					{
+						std::stringstream css;
+						css << (tempLevel[i] - 48) << (tempLevel[i + 1] - 48);
+						val = atoi(css.str().c_str());
+						levelMatrix[l].push_back(val);
+						m = 1;
+					}
 				}
+				if (tempLevel[i] == legalChars[j] && m < 1)
+				{
+					levelMatrix[l].push_back(tempLevel[i] - 48);
+				}
+
 			}
 		}
 	}
-
+	for (int i = 0; i < levelMatrix.size(); i++)
+	{
+		currentLevel.resize(levelMatrix[i][0], std::vector<int>(levelMatrix[i][1]));
+		m = 0;
+		for (int j = 0; j < currentLevel.size(); j++)
+		{
+			for (int k = 0; k < currentLevel[j].size(); k++)
+			{
+				currentLevel[j][k] = levelMatrix[i][m+2];
+				m++;
+			}
+		}
+		geneticAlgorithm(currentLevel);
+	}
 
 
 	/*
@@ -107,6 +137,11 @@ int main()
 	// Program end after pause
 	system("PAUSE");
 	return 0;
+}
+
+void geneticAlgorithm(std::vector<std::vector<int>> _currentLevel)
+{
+
 }
 
 float stepFunc(float &_w1, float &_w2, float _theta, int _iterations, float _alpha)
