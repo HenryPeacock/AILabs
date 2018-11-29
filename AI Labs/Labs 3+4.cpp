@@ -44,9 +44,34 @@ int main()
 
 	// Initial variable declare
 	std::vector<std::vector<int>> levelMatrix;
-	levelMatrix.resize(2 ,std::vector<int>(0));
-	std::ifstream levelFiles[2];
-	for (int j = 0; j < 2; j++)
+	std::ifstream levelFiles[10];
+	int levelQuantity;
+	std::string tempLevelQuantity;
+	bool correct = FALSE;
+
+	// Requesting level amount with data validation
+	std::cout << "How many Levels do you want to load? (Maximum 5) ";
+	
+	while (correct = FALSE)
+	{
+		std::getline(std::cin, tempLevelQuantity);
+		std::stringstream convert(tempLevelQuantity);
+		std::cout << std::endl;
+		if (convert >> levelQuantity && !(convert >> tempLevelQuantity) && levelQuantity <= 5)
+		{
+			levelQuantity = std::stoi(tempLevelQuantity);
+			correct = TRUE;
+		}
+		else
+		{
+			std::cin.clear();
+			std::cerr << "Please enter an integer of 5 or below. ";
+		}
+	}
+	
+
+	//Loading Levels
+	for (int j = 0; j < levelQuantity; j++)
 	{
 		std::stringstream ss;
 		ss << "level" << j + 1 << ".txt";
@@ -57,14 +82,18 @@ int main()
 		}
 	}
 
+	// Resize the level matrix based on how many files the user wishes to load
+	levelMatrix.resize(levelQuantity, std::vector<int>(0));
+
+	// Declaring the variables for fully creating the levels
 	char ph;
 	std::vector<char> tempLevel;
 	char legalChars[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 	std::vector<std::vector<int>> currentLevel;
 	int m = 0;
 	int val;
-
-	for (int l = 0; l < 2; l++)
+	
+	for (int l = 0; l < levelQuantity; l++)
 	{
 		tempLevel.clear();
 		while (levelFiles[l].get(ph))
@@ -76,20 +105,28 @@ int main()
 			for (int j = 0; j < 10; j++)
 			{
 				m = 0;
-				for (int k = 0; k < 10; k++)
+				if (tempLevel[i] == legalChars[j])
 				{
-					if (tempLevel[i] == legalChars[j] && tempLevel[i + 1] == legalChars[k])
+					for (int k = 0; k < 10; k++)
 					{
-						std::stringstream css;
-						css << (tempLevel[i] - 48) << (tempLevel[i + 1] - 48);
-						val = atoi(css.str().c_str());
-						levelMatrix[l].push_back(val);
-						m = 1;
+						if ((i + 2) < tempLevel.size())
+						{
+							if (tempLevel[i + 2] == legalChars[k])
+							{
+								std::stringstream css;
+								css << (tempLevel[i] - 48) << (tempLevel[i + 2] - 48);
+								val = atoi(css.str().c_str());
+								levelMatrix[l].push_back(val);
+								i += 3;
+								m = 1;
+							}
+						}
 					}
-				}
-				if (tempLevel[i] == legalChars[j] && m < 1)
-				{
-					levelMatrix[l].push_back(tempLevel[i] - 48);
+					if (m < 1) 
+					{
+						levelMatrix[l].push_back(tempLevel[i] - 48);
+					}
+					
 				}
 
 			}
