@@ -12,9 +12,11 @@
 
 // Function declaration
 // Step function
-float stepFunc(float &_w1, float &_w2, float _theta, int _iterations, float _alpha);
-float multiNeuron(int _iterations, float _alpha);
-void geneticAlgorithm(std::vector<std::vector<int>> _currentLevel);
+float StepFunc(float &_w1, float &_w2, float _theta, int _iterations, float _alpha);
+// Multi Neuron Function
+float MultiNeuron(int _iterations, float _alpha);
+// Genetic algorithm function
+void GeneticAlgorithm(std::vector<std::vector<int>> _currentLevel);
 /*
 // Sign function
 float signFunc(int _x, float _theta);
@@ -25,6 +27,7 @@ float linearFunc(float _x, float _theta);
 */
 int main()
 {
+	/* Old
 	// Initialiase variables
 	int iterations = 20;
 	int mnIterations = 10000000;
@@ -33,6 +36,7 @@ int main()
 	float w2 = -0.1f;
 	float alpha = 0.1f;
 	float y;
+	*/
 
 	// Multineural Network
 	//multiNeuron(mnIterations, alpha);
@@ -42,41 +46,40 @@ int main()
 	//std::ifstream levelFile("level1.txt");	
 	
 
-	// Initial variable declare
+	// Initial variable declaration
 	std::vector<std::vector<int>> levelMatrix;
 	std::ifstream levelFiles[10];
-	int levelQuantity;
 	std::string tempLevelQuantity;
 	bool correct = FALSE;
+	int levelQuantity;
 
 	// Requesting level amount with data validation
 	std::cout << "How many Levels do you want to load? (Maximum 5) ";
-	
-	while (correct = FALSE)
+	while (correct == FALSE)																							// Loop when the input is invalid
 	{
-		std::getline(std::cin, tempLevelQuantity);
-		std::stringstream convert(tempLevelQuantity);
-		std::cout << std::endl;
-		if (convert >> levelQuantity && !(convert >> tempLevelQuantity) && levelQuantity <= 5)
+		std::getline(std::cin, tempLevelQuantity);																		// Take User Input as string
+		std::stringstream convert(tempLevelQuantity);																	// Convert to String Stream
+		std::cout << std::endl;																						
+		if (convert >> levelQuantity && !(convert >> tempLevelQuantity) && levelQuantity <= 5 && levelQuantity > 0)		// Test if it is an integer, and if it's between 1 and 5
 		{
-			levelQuantity = std::stoi(tempLevelQuantity);
-			correct = TRUE;
+			levelQuantity = std::stoi(tempLevelQuantity);																// Convert string to int and store
+			correct = TRUE;																								// Exit loop
 		}
 		else
 		{
-			std::cin.clear();
-			std::cerr << "Please enter an integer of 5 or below. ";
+			std::cin.clear();																							// Clear the user input
+			std::cerr << "Please enter an integer of between 1 and 5: ";												// Output the error message
 		}
 	}
 	
 
-	//Loading Levels
+	// Loading Levels
 	for (int j = 0; j < levelQuantity; j++)
 	{
-		std::stringstream ss;
-		ss << "level" << j + 1 << ".txt";
-		levelFiles[j].open(ss.str().c_str());
-		if (levelFiles[j].is_open() == false)
+		std::stringstream ss;						// Create stringstream
+		ss << "level" << j + 1 << ".txt";			// Merge level file format with current iteration
+		levelFiles[j].open(ss.str().c_str());		// Open the level file into the current iteration of the level files array
+		if (levelFiles[j].is_open() == false)		// Check that the file has sucessfully opened, if not throw an exception
 		{
 			throw std::exception();
 		}
@@ -86,45 +89,46 @@ int main()
 	levelMatrix.resize(levelQuantity, std::vector<int>(0));
 
 	// Declaring the variables for fully creating the levels
-	char ph;
+	char placeHolder;
 	std::vector<char> tempLevel;
 	char legalChars[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 	std::vector<std::vector<int>> currentLevel;
-	int m = 0;
+	bool isLoaded = FALSE;
 	int val;
 	
-	for (int l = 0; l < levelQuantity; l++)
+	// Validating the level files and saving to a final level matrix
+	for (int l = 0; l < levelQuantity; l++)														// Loop for all levels
 	{
-		tempLevel.clear();
-		while (levelFiles[l].get(ph))
+		tempLevel.clear();																		// Clear the temporary level vector
+		while (levelFiles[l].get(placeHolder))													// Load the file into the temporary level vector
 		{
-			tempLevel.push_back(ph);
+			tempLevel.push_back(placeHolder);
 		}
-		for (int i = 0; i < (tempLevel.size()); i++)
+		for (int i = 0; i < (tempLevel.size()); i++)											// Loop to the size of the temporary level vector
 		{
-			for (int j = 0; j < 10; j++)
+			for (int j = 0; j < 10; j++)														// Loop 10 times to check against all legal characters (numbers 1 to 10, declared on line 89)
 			{
-				m = 0;
-				if (tempLevel[i] == legalChars[j])
+				isLoaded = FALSE;																// Set the load check to 0
+				if (tempLevel[i] == legalChars[j])												// Test whether the current space is a legal character
 				{
-					for (int k = 0; k < 10; k++)
+					for (int k = 0; k < 10; k++)												// Loop 10 times to check if the next character is a number, this tests whether we are taking a 2 digit number
 					{
-						if ((i + 2) < tempLevel.size())
+						if ((i + 2) < tempLevel.size())											// Check that we are remaining within the array size to avoid vertex errors 
 						{
-							if (tempLevel[i + 2] == legalChars[k])
+							if (tempLevel[i + 2] == legalChars[k])								// Check if the next character (2 away due to file loading format) is a number
 							{
-								std::stringstream css;
-								css << (tempLevel[i] - 48) << (tempLevel[i + 2] - 48);
-								val = atoi(css.str().c_str());
-								levelMatrix[l].push_back(val);
-								i += 3;
-								m = 1;
+								std::stringstream css;											// Create stringstream
+								css << (tempLevel[i] - 48) << (tempLevel[i + 2] - 48);			// Concatenate numbers
+								val = atoi(css.str().c_str());									// Convert to integer
+								levelMatrix[l].push_back(val);									// Save in level matrix
+								i += 3;															// Increment i
+								isLoaded = TRUE;												// Avoid the number being saved again
 							}
 						}
 					}
-					if (m < 1) 
+					if (isLoaded == FALSE)														// Test if a 2 digit number was loaded
 					{
-						levelMatrix[l].push_back(tempLevel[i] - 48);
+						levelMatrix[l].push_back(tempLevel[i] - 48);							// Save in level matrix
 					}
 					
 				}
@@ -132,19 +136,22 @@ int main()
 			}
 		}
 	}
-	for (int i = 0; i < levelMatrix.size(); i++)
+
+	// Load levels into a matrix and perform the genetic alorithm
+	for (int i = 0; i < levelMatrix.size(); i++)												// Loop for every level
 	{
-		currentLevel.resize(levelMatrix[i][0], std::vector<int>(levelMatrix[i][1]));
-		m = 0;
-		for (int j = 0; j < currentLevel.size(); j++)
+		currentLevel.resize(levelMatrix[i][0], std::vector<int>(levelMatrix[i][1]));			// Resize the current level to the size of the first 2 numbers, which are always the dimensions
+		val = 0;																				/* Set an integer to 0 to count which part of the level matrix we should pull from since the level matrix
+																								   stores each level on one line and the current will store it in 2 dimensions */
+		for (int j = 0; j < currentLevel.size(); j++)											// Loops for the x size of the level
 		{
-			for (int k = 0; k < currentLevel[j].size(); k++)
+			for (int k = 0; k < currentLevel[j].size(); k++)									// Loops for the y size of the level
 			{
-				currentLevel[j][k] = levelMatrix[i][m+2];
-				m++;
+				currentLevel[j][k] = levelMatrix[i][val+2];										// Loads the values into the correct part of currentLevel
+				val++;																			// Increments val
 			}
 		}
-		geneticAlgorithm(currentLevel);
+		GeneticAlgorithm(currentLevel);															// Run the genetic algorithm for the current level
 	}
 
 
@@ -176,12 +183,12 @@ int main()
 	return 0;
 }
 
-void geneticAlgorithm(std::vector<std::vector<int>> _currentLevel)
+void GeneticAlgorithm(std::vector<std::vector<int>> _currentLevel)
 {
 
 }
 
-float stepFunc(float &_w1, float &_w2, float _theta, int _iterations, float _alpha)
+float StepFunc(float &_w1, float &_w2, float _theta, int _iterations, float _alpha)
 {
 	float x1[4] = { 0.0f, 0.0f, 1.0f, 1.0f};
 	float x2[4] = { 0.0f, 1.0f, 0.0f, 1.0f};
@@ -226,7 +233,7 @@ float stepFunc(float &_w1, float &_w2, float _theta, int _iterations, float _alp
 	*/
 }
 
-float multiNeuron(int _iterations, float _alpha)
+float MultiNeuron(int _iterations, float _alpha)
 {
 	// Initialising the variables
 	float _w[5][5] = {
